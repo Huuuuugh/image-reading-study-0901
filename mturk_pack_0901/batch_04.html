@@ -1,0 +1,146 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Image reading study — batch_04</title>
+<style>
+ body{font-family:Segoe UI,Arial,sans-serif;margin:0;background:#181a20;color:#e8eaf0;display:flex;flex-direction:column;height:100vh}
+ header{padding:8px 16px;background:#20232b;display:flex;gap:10px;align-items:center;font-size:14px;flex-wrap:wrap}
+ #prog{color:#9aa4b8} button{background:#2d3340;color:#e8eaf0;border:1px solid #444;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:14px}
+ button:hover{border-color:#4a6cff}
+ #banner{padding:7px 16px;font-size:13px;line-height:1.5;background:#4a2020;color:#ffd9d9;border-bottom:1px solid #7a3535}
+ #banner.ok{background:#1d3524;color:#c9f2d5;border-bottom-color:#2f5c3c}
+ #banner code{background:rgba(0,0,0,.35);padding:1px 6px;border-radius:4px}
+ main{flex:1;display:flex;min-height:0}
+ #imgwrap{flex:3;display:flex;align-items:center;justify-content:center;background:#101216;min-width:0}
+ #img{max-width:100%;max-height:100%;object-fit:contain}
+ #panel{flex:2;padding:22px;display:flex;flex-direction:column;gap:14px;max-width:560px;overflow-y:auto}
+ #q{font-size:18px;line-height:1.6;white-space:pre-wrap}
+ #ans{font-size:18px;padding:8px;background:#101216;color:#fff;border:1px solid #555;border-radius:6px;width:100%}
+ .yn button{font-size:20px;padding:10px 26px;margin-right:12px}
+ #hint{color:#8b93a6;font-size:12px;line-height:1.6} .done{color:#5fd282;font-size:18px;line-height:1.7}
+ kbd{background:#2d3340;border-radius:3px;padding:1px 5px;font-size:12px}
+ #gate{position:fixed;inset:0;background:rgba(10,12,16,.96);display:flex;align-items:center;justify-content:center;z-index:9}
+ #gate .card{background:#20232b;border:1px solid #3a4152;border-radius:10px;padding:28px;max-width:640px;font-size:15px;line-height:1.7}
+ #gate input{font-size:16px;padding:8px;width:100%;background:#101216;color:#fff;border:1px solid #555;border-radius:6px;margin:10px 0}
+ #gate button{font-size:16px;padding:9px 22px}
+ code.cc{font-size:20px;background:#101216;padding:4px 10px;border-radius:6px;color:#ffd479}
+</style></head><body>
+<div id="gate"><div class="card">
+ <h2 style="margin-top:0">Image reading study — batch_04</h2>
+ <p>You will see a series of images (some are close-up cut-outs of a larger picture), each with
+ one short question. <b>Answer exactly what is drawn in the image shown</b> — do not infer what
+ "should" be there, and do not correct anything that looks wrong.</p>
+ <p>Keys: <kbd>y</kbd>/<kbd>n</kbd> for yes–no · <kbd>a</kbd>/<kbd>b</kbd> for a–b ·
+ type + <kbd>Enter</kbd> for values. If the answer cannot be read from the picture (the thing is not there, is cut off, or is unreadable), type a single dash <b>-</b> and press Enter; a dash is never counted against you. <kbd>k</kbd> skips a question entirely (only if truly impossible).
+ Lists: comma-separated, in the order the question specifies.</p>
+ <p>Your progress is saved in this browser; you can close and resume. When every question is
+ answered you will get a completion code.</p>
+ <p><b>Enter your Worker ID to begin:</b></p>
+ <input id="wid" autocomplete="off" placeholder="e.g. A2ABCDEFG12345">
+ <button id="bstart">Start</button>
+</div></div>
+<header><b>batch_04</b><span id="prog"></span>
+<button id="bfile">choose autosave file</button>
+<button id="bskip">skip (k)</button><button id="bback">back</button>
+<button id="bexp">export JSONL</button><span id="saved"></span></header>
+<div id="banner"></div>
+<main><div id="imgwrap"><img id="img" alt=""></div>
+<div id="panel"><div id="q"></div>
+ <div id="ansbox"></div>
+ <div id="hint">Answer exactly what is DRAWN in the image. Do not infer what "should" be there.<br>
+ Keys: <kbd>y</kbd>/<kbd>n</kbd> yes–no · <kbd>a</kbd>/<kbd>b</kbd> a–b · type + <kbd>Enter</kbd> values · cannot read it from the picture? type <b>-</b> · <kbd>k</kbd> skip.<br>
+ Lists: comma-separated, in the order the question specifies.</div></div></main>
+<script>
+const ITEMS=[{"i": "qb00c0f1b79c7", "im": "images/18108f13744187d1.png", "q": "This image was supposed to depict a printed stock-list table whose left category header cell is vertically merged to span exactly the number of item rows in each category. Ignoring artistic quality, does the image actually DEPICT that requested subject / carrier / scene -- the physical object, document, board, or diagram it describes? A realistic photo, an illustration, a schematic or a clean diagram of the requested subject ALL count as yes. Answer NO only if the image instead shows just a blank card or plain panel that prints an answer with none of the requested subject depicted, or shows something unrelated. Answer yes or no only.", "m": "yn"}, {"i": "q0bc5cc67814f", "im": "images/3079251cdefb70a7.png", "q": "Look at the single central object standing on the ground. Does it cast just ONE single shadow (only one shadow, with no second shadow going a different way)? Answer yes if there is only one shadow; answer no if there are two shadows pointing different ways. Answer yes or no only.", "m": "yn"}, {"i": "q868a0d6be7c1", "im": "images/6711efe565888f9a.png", "q": "In this cut-out, is the bag itself brown paper, clear plastic, or silver foil? Answer with one word: paper, plastic, or silver. If the bag is not in the cut-out, answer none.", "m": "tx"}, {"i": "qc5e7c4d6e62e", "im": "images/09314d7d78b3b30a.png", "q": "Does this picture show a sealed tattoo needle cartridge lying point-end towards the camera on a sterile mat with its box standing behind it? Answer yes or no only.", "m": "yn"}, {"i": "q729d8fb1bd68", "im": "images/456ef5b5766d4e38.png", "q": "This picture should show these countable objects: a warehouse pyramid pile of wooden crates stacked in horizontal rows. Look at the individual objects being counted. Is each one a wooden crate in the pile, and not some other object, a shapeless blob, or a mixture of different things? Answer with the single word yes or no only.", "m": "yn"}, {"i": "qbbdb14130a99", "im": "images/7cf29929efffc807.png", "q": "Take this cut-out as a clock face with 12 at the top. Toward which hour does the high edge of the sloping cut at the tip of the shoot in this cut-out face? Answer with that hour number only.", "m": "tx"}, {"i": "qddbf41ec73d8", "im": "images/11242298046d50ec.png", "q": "Look at the SITE CREW FEE column. Is the fee 310 written ONCE inside a single tall merged cell that covers several day rows, or is 310 repeated in a separate cell on each of those rows? Answer with exactly one word: MERGED or REPEATED.", "m": "tx"}, {"i": "q5bb805f2e38d", "im": "images/d9f9badbab5ae6b3.png", "q": "In this cut-out, where against the rod does the point of the burn mark sit? Answer with one of: below the 0.5 m mark, between the 0.5 m and 1.0 m marks, above the 1.0 m mark, no pointed mark on this wall, or none if the wall cannot be made out.", "m": "tx"}, {"i": "q11e1be597f88", "im": "images/137f1de9d28c77b0.png", "q": "Does this image show a meter with a numeric voltage display together with resistors or a battery (a voltage-divider circuit)? A diagram, illustration or photo all count. Answer yes or no.", "m": "yn"}, {"i": "q9e02c60f657e", "im": "images/73bc9bea1f6e96b2.png", "q": "Read the LAYOVER duration printed in the 3-th layover box (the layover after the 3-th segment). Report exactly what is printed, digit for digit, even if it looks wrong or inconsistent. Do NOT recompute, correct, or round it. Give it as the printed hours-and-minutes string: the hours as digits, then the letter h, then the minutes as digits, then the letter m, and nothing else.", "m": "tx"}, {"i": "q7813b5964aa2", "im": "images/fce6b438c796bd73.png", "q": "What number is on the tag in this cut-out? Answer with that number only.", "m": "tx"}, {"i": "q713f0ab2b4d5", "im": "images/05788b3b7b728504.png", "q": "This is a close-up of part of a five-line music staff. Exactly one notehead sits at the CENTRE of this picture; if any other noteheads appear near the left or right edge, ignore them completely. Number the five staff lines from the BOTTOM one upwards, so the lowest line is line 1 and the highest line is line 5, and number the four gaps between them the same way, so space 1 is the gap between line 1 and line 2. Where does the centre of that one notehead sit? Answer with EXACTLY one of these and nothing else: 'line 1' 'line 2' 'line 3' 'line 4' 'line 5' 'space 1' 'space 2' 'space 3' 'space 4' 'above 1' (the gap just over line 5) 'above 2' (one short extra line drawn over the staff) 'above 3' (the gap over that short line) 'below 1' (the gap just under line 1) 'below 2' (one short extra line drawn under the staff) 'below 3'.", "m": "tx"}, {"i": "q70841ec543fb", "im": "images/c05d50576bc8567b.png", "q": "Three digits are printed inside round brackets in this image. Read them out in the order they appear, separated by single spaces. Give the digits only, no explanation.", "m": "tx"}, {"i": "qfbcb4b71d8ef", "im": "images/e33cda9f31204ad8.png", "q": "Is there a tick or any pen mark inside the square in this cut-out? Answer yes or no.", "m": "yn"}, {"i": "q30834d57fa9f", "im": "images/fbe2a014cec00076.png", "q": "Which one of these words names the shade filling this patch. Answer with one word: red, orange, yellow, green, blue, purple.", "m": "tx"}, {"i": "q98a58919a0d1", "im": "images/922199a6732a7ae0.png", "q": "Write out the club names on the match lines in this cut-out, in the order they are printed, separated by commas.", "m": "tx"}, {"i": "q82e57249fe70", "im": "images/6aaf0c3f41ff6759.png", "q": "Is there a round RED piece in this picture? Answer yes or no only.", "m": "yn"}, {"i": "q84e9ba164a23", "im": "images/0bc4a89b362dfdfd.png", "q": "Copy the name printed across the top of the box in this cut-out.", "m": "tx"}, {"i": "qfec55e0a441e", "im": "images/af681c49090a3120.png", "q": "This image was supposed to depict top-down photo of a bamboo Gomoku board on a cafe table, mid/late game, Black threatens five-in-a-row with legal parity and no existing five. Ignoring artistic quality, does the image actually DEPICT that requested subject / carrier / scene -- the physical object, document, board, or diagram it describes? A realistic photo, an illustration, a schematic or a clean diagram of the requested subject ALL count as yes. Answer NO only if the image instead shows just a blank card or plain panel that prints an answer with none of the requested subject depicted, or shows something unrelated. Answer yes or no only.", "m": "yn"}, {"i": "qea3c8567b4e2", "im": "images/7b7857cf5499e538.png", "q": "Copy the speed figure printed on the tag beside this boat. Write digits only.", "m": "tx"}, {"i": "q1c3ce3675d8a", "im": "images/46ed2b1f264dec3d.png", "q": "This is a cropped side-view photo of a backpack. A mesh water-bottle POCKET is sewn onto one side of the pack. Do NOT assume a standard side; answer only about THIS picture. Which side of the pack is the mesh side pocket on -- the LEFT side or the RIGHT side? Answer with exactly one word: left or right.", "m": "tx"}, {"i": "q5c9dd49c25ae", "im": "images/31154464544f1b4d.png", "q": "This is a top-down plan of a spiral staircase with numbered treads around a central column. Following the tread NUMBERS 1, 2, 3, ... in increasing order, do they go CLOCKWISE or COUNTER-CLOCKWISE around the centre? Answer with exactly one word: clockwise or counterclockwise.", "m": "tx"}, {"i": "q027b13b0f128", "im": "images/d5ea9a11c9097822.png", "q": "This picture shows some printing on a small card taped to the glass of a shop door. Look only at the shapes of the letters themselves. Are the letters the normal way round -- the way letters look in an ordinary book, reading left to right -- or are they back-to-front, the way ordinary writing looks when you see it in a mirror? Answer with exactly one word: normal or mirrored.", "m": "tx"}, {"i": "q39d6a3a80875", "im": "images/772a6bdcb19e1d78.png", "q": "In the DRAWER RECONCILIATION box at the foot, read the amount printed on the 'NET CASH IN DRAWER' line. Report exactly what is printed, digit for digit, even if it looks wrong or inconsistent. Do NOT recompute, correct, or round it. Report as a decimal number of currency units, ignore the currency symbol.", "m": "tx"}, {"i": "q2fdc2e59393d", "im": "images/ac46e8ea43512d73.png", "q": "In this cut-out, are the playing cards showing their printed faces or their plain backs? Answer with one word: faces or backs.", "m": "tx"}, {"i": "q8f92ea3ce127", "im": "images/d964a55f726d04cc.png", "q": "This is a small close-up of a patch of night sky. Is there a BIG BRIGHT star in it -- a large white star that stands out clearly, much brighter than the tiny faint specks of background stars? Answer yes or no only.", "m": "yn"}, {"i": "q37ae907f348a", "im": "images/569405e12bb351ff.png", "q": "Is the main subject of this image a Roman numeral inscription -- an engraved sequence of the capital letters I, V, X, L, C, D, M (as on a stone cornerstone or plaque)? Answer yes or no.", "m": "yn"}, {"i": "qcdbb1335a858", "im": "images/7e00a9a1ed61c90e.png", "q": "This is a close-up cut out of a bigger picture of a row of vaccine cartons. Does this cut-out show exactly ONE whole vaccine carton together with its own printed temperature card -- one single vaccine carton, not two of them side by side and not just a piece of one? Answer yes or no only.", "m": "yn"}, {"i": "qf6a0720812ae", "im": "images/0a9ba374419960d7.png", "q": "This is one row cut out of a report table. Is there a gold star drawn on this row? Answer yes or no only.", "m": "yn"}, {"i": "qd9b806bc09ae", "im": "images/7d0906b5c27a78e2.png", "q": "A train is standing still on the railway track -- it is the solid vehicle body sitting on the rails. Some of the signal masts beside the track may be nearer to the camera than the train and some may be further away than it. How many of the signal masts are FURTHER AWAY from the camera than the train? Answer with a single digit, using 0 if none of them are. Answer with the digit and nothing else.", "m": "tx"}, {"i": "qf3b987d47d7d", "im": "images/aa253581ec02ce75.png", "q": "Never mind how well it is drawn. Does this picture show a warehouse pyramid pile of wooden crates stacked in several horizontal rows, wider at the bottom? A realistic photo, an illustration, a schematic or a clean diagram ALL count as yes. Answer NO only if the image instead shows just a blank card or plain panel that prints an answer with none of that shown, or shows something unrelated. Answer yes or no only.", "m": "yn"}, {"i": "qea475e17c7d3", "im": "images/11242298046d50ec.png", "q": "Look at the EQUIPMENT column. Is 'Mobile crane' written ONCE inside a single tall merged cell that covers several day rows, or is it repeated in a separate cell on each of its rows? Answer with exactly one word: MERGED or REPEATED.", "m": "tx"}, {"i": "q4b0cf3130ba7", "im": "images/c056285ef9c5fdba.png", "q": "This is a close-up cut from a lit-up display screen showing one line of a pollutant list. A concentration number is printed on that line. Write down just that number and nothing else.", "m": "tx"}, {"i": "q864b0e3f64c8", "im": "images/dccab8c174acf264.png", "q": "This image was supposed to show a strip of separate numbered panels in a row, each panel showing one big single-coloured object standing in it and a printed slip of text on the wall. Ignoring artistic quality, and ignoring whether the details are right or wrong, does the image DEPICT that? Answer NO only if the picture is unrelated to that description or contains no such arrangement at all. Answer yes or no only.", "m": "yn"}, {"i": "qf3613c237f24", "im": "images/3350cc6d7668e152.png", "q": "This is a close-up cut from a big screen on a wall. A row of large bright digits is printed in it, just after a '#' sign. Write down exactly those digits and nothing else -- no commas, no '#' sign, no words. Copy what is printed; do not guess.", "m": "tx"}, {"i": "q36b702e6ad32", "im": "images/800f75e11210b735.png", "q": "Copy the block of characters at the far right of this cut-out, after the pairs end. Write those characters only.", "m": "tx"}, {"i": "qe4912853cf88", "im": "images/c6cf35623ac57920.png", "q": "Read the weight standing on the Marram line of the race board and write that figure only.", "m": "tx"}, {"i": "q1484e2b82923", "im": "images/617c840444ee7324.png", "q": "This picture should show: a handheld sports lap-timer LCD showing seven MM:SS.CS lap splits and a TOTAL row, and nothing else. Ignoring whether any of the numbers shown are right or wrong: apart from a handheld lap-timer with an LCD display of lap times and the things that belong with it, is the picture free of extra eye-catching objects, clutter or duplicate copies? Answer yes if there is nothing extra, no if there is clutter or extra objects. Answer with the single word yes or no only.", "m": "yn"}, {"i": "qb4d41cf984c0", "im": "images/313d2b943cabadcf.png", "q": "This image was supposed to depict an ELEVATOR BUTTON PANEL: a vertical column of round numbered floor buttons with a 'G' (Ground) button. Ignoring the exact numbers and ignoring artistic quality, does the image actually DEPICT such an elevator button panel (a column of round floor buttons)? A photo, render or clean graphic all count as yes. Answer NO only if it is a blank panel, an unrelated object, or a single button. Answer yes or no only.", "m": "yn"}, {"i": "q6be8a87a2601", "im": "images/7369503d8de0cb3a.png", "q": "This image was supposed to depict: a carpenter's pine board marked with equally spaced pencil cross-lines for shelf-pin holes, straight-on top-down macro of the marked board. Ignoring artistic quality, and ignoring whether any of the marks, measurements or values shown are correct, does the image actually DEPICT that subject? A photo, an illustration, a schematic or a clean diagram all count as yes. Answer NO only if it is blank, or shows something completely different. Answer yes or no only.", "m": "yn"}, {"i": "qf41e7ad18fbb", "im": "images/fbf5df03a235f2d3.png", "q": "Copy the flight number printed on this row. Write the number only.", "m": "tx"}, {"i": "qdb5071da16ab", "im": "images/ce25eac620189958.png", "q": "Read the name printed on the THIRD 'pays:' line on the napkin. Report just the name.", "m": "tx"}, {"i": "q2533dbeee25a", "im": "images/c95569cbd3772de8.png", "q": "Copy the number printed inside the square in this cut-out. Write only the number.", "m": "tx"}, {"i": "q0d342739c5c8", "im": "images/790d629bc0bbb796.png", "q": "This scheduling board has a green summary panel stating a COMMON MEETING WINDOW with the phrase 'duration N hours'. Read ONLY that duration number (how many hours) and answer with just the integer, nothing else.", "m": "tx"}, {"i": "qcf65c1d7b83b", "im": "images/1652e7bed8af9bb2.png", "q": "This cut-out is one coloured bar from the scale of an energy label. Write the single capital letter printed on this bar and nothing else. If no letter is printed on it, write a dash.", "m": "tx"}, {"i": "qf5783b6a120b", "im": "images/e3ee19707c9ea9d5.png", "q": "Copy the sector letter printed beside this leg. Write the single letter only.", "m": "tx"}, {"i": "q9f9f46fc8184", "im": "images/dd11ce83d1433e83.png", "q": "This narrow strip is ONE column of a punched paper tape. In this column there are FIVE hole positions arranged vertically, from the top track down to the bottom track. Ignore the small round sprocket feed holes that run continuously along the middle of the tape, and ignore any printed numbers or writing. Answer with exactly five characters and nothing else: write 1 where the paper is punched through with a hole and 0 where the paper is blank, in order from the top position to the bottom position (for example 10110).", "m": "tx"}, {"i": "q86f95bb10e6d", "im": "images/5bedf1f7904b1d99.png", "q": "Look only at this cut-out. Which club name is printed across this person's top? Answer wharf, kilns or draymen.", "m": "tx"}, {"i": "qecb2af0806e0", "im": "images/c4f9f04d1707e93c.png", "q": "This image was supposed to show a single book leaning against a wall with its spine painted red. Ignoring quality, does it depict one book propped at an angle against a wall with a red spine edge? A photo or render both count. Answer NO only for a blank panel or no book. Answer yes or no only.", "m": "yn"}, {"i": "qabc86fc8a3e2", "im": "images/8b3c651db728501e.png", "q": "This is one row cut out of a printed item list. What item code is printed on this row? Answer with just that code, copied exactly as it is printed, and nothing else.", "m": "tx"}, {"i": "q228da7de5391", "im": "images/9da3d1778224d8f7.png", "q": "Copy the number painted on this block. Write digits only.", "m": "tx"}, {"i": "q08b48e92b5dc", "im": "images/1b9d0344aa841fde.png", "q": "Copy the sample name printed in the first column of this cut-out. Write the name only.", "m": "tx"}, {"i": "q3623beaaf1e9", "im": "images/d6914f48aaca7784.png", "q": "Now look at the REST of the window pane -- the part of the glass that is not that see-through view. What colour family is that other part as it is actually drawn? If the whole pane is one single colour, with no second differently-coloured part on it at all, say so instead. Answer with exactly one word: orange, blue, or uniform.", "m": "tx"}, {"i": "q93410d7ca03a", "im": "images/6368876f12678212.png", "q": "Among the four dealt playing cards, how many show the value 8 (eight)? Give a whole number only.", "m": "tx"}, {"i": "qa8cfdd8b0966", "im": "images/049178e44c6e919f.png", "q": "Never mind how well it is drawn. Does this picture show houses with chimneys and smoke coming from them? A photograph, a painting or a drawing ALL count as yes. Answer NO only if the image shows a blank card that just states an answer, or shows no houses at all. Answer yes or no only.", "m": "yn"}, {"i": "q784deec922e4", "im": "images/5b5f5d2e50cae718.png", "q": "Does the heavier rain line, the one drawn thicker than the rest, cross the tread of the seat row in this cut-out? Answer yes or no only.", "m": "yn"}, {"i": "q7271c29414c8", "im": "images/7e9a4ecf1a1e845f.png", "q": "Every souvenir in this picture carries one big capital letter. List the letters of the souvenirs that are in the wire basket. Answer with the letters only, comma-separated, in alphabetical order. If there are none, answer NONE. No other text.", "m": "tx"}, {"i": "qc86cadbf0fd8", "im": "images/aaa02a7854fa9d12.png", "q": "This image was supposed to show a sheet of pale card printed with lots of small round black dots laid out in rows and columns. Ignoring artistic quality, and ignoring whether the dots are the right number or evenly spread or not, does the image DEPICT that? Answer NO only if the picture is unrelated to that description or contains no such arrangement at all. Answer yes or no only.", "m": "yn"}, {"i": "q6b1eaaad7c52", "im": "images/bda3b1308bfab8de.png", "q": "Copy the hours figure printed in this column. Write the number only.", "m": "tx"}, {"i": "qf319ab4dabf0", "im": "images/900157f0d69e3c66.png", "q": "This picture should show these countable objects: a single beaded necklace whose beads run in three contiguous colour blocks along the strand (a block of one colour, then a block of another, then a third). Look at the individual objects being counted. Is each one a red bead, and not some other object, a shapeless blob, or a mixture of different things? Answer with the single word yes or no only.", "m": "yn"}, {"i": "qe2f94e5872e9", "im": "images/8ce0c739b870584e.png", "q": "Does this cut-out show a table with four columns of figures under headings? Answer yes or no only.", "m": "yn"}];
+const BATCH="batch_04";
+const LS_A='go3_'+BATCH+'_ans', LS_W='go3_'+BATCH+'_wid';
+let A=JSON.parse(localStorage.getItem(LS_A)||'{}');
+let WID=localStorage.getItem(LS_W)||'';
+let cur=0; while(cur<ITEMS.length && A[ITEMS[cur].i]!==undefined) cur++;
+
+function djb2(s){let h=5381;for(let i=0;i<s.length;i++){h=(Math.imul(h,33)^s.charCodeAt(i))>>>0;}return h;}
+function ccode(){return 'GO3-'+BATCH.replace('batch_','')+'-'+djb2(WID.trim()+'|'+BATCH+'|'+ITEMS.length).toString(16);}
+
+let fh=null, chain=Promise.resolve(), fname='';
+const FSA=(typeof window.showSaveFilePicker==='function') && window.isSecureContext;
+function lines(){return ITEMS.filter(it=>A[it.i]!==undefined).map(it=>JSON.stringify(
+  {iid:it.i,b:BATCH,w:WID,a:A[it.i].a,s:!!A[it.i].s,t:A[it.i].t}));}
+async function pick(){
+ if(!FSA){banner();return;}
+ try{
+  fh=await window.showSaveFilePicker({suggestedName:'answers_'+BATCH+'_'+(WID||'worker')+'.jsonl',
+      types:[{description:'JSON Lines',accept:{'text/plain':['.jsonl']}}]});
+  fname=fh.name||'file'; await flush(); banner();
+ }catch(e){}
+}
+function flush(){
+ chain=chain.then(async()=>{
+  if(!fh)return;
+  const w=await fh.createWritable();
+  await w.write(lines().join('\n')+'\n'); await w.close();
+ }).catch(e=>{fh=null;banner();});
+ return chain;
+}
+function banner(){
+ const b=document.getElementById('banner');
+ if(fh){b.className='ok';b.innerHTML='Autosave ON — every answer is written straight to <b>'+fname+'</b>.';}
+ else if(FSA){b.className='';b.innerHTML='<b>Autosave is OFF.</b> Answers live only in this browser — click <b>choose autosave file</b> to write every answer into a .jsonl as you go, and export before closing.';}
+ else{b.className='';b.innerHTML='<b>Autosave unavailable in this browser</b> (no File System Access API — Firefox/Safari). Use Chrome or Edge if you can. Until then answers live in localStorage only — export regularly.';}
+}
+function show(){
+ if(cur>=ITEMS.length){
+  document.getElementById('q').innerHTML='<span class=done>All done — thank you!<br>'+
+   'Your completion code: <code class=cc>'+ccode()+'</code><br>'+
+   'Click <b>export JSONL</b> and submit the file together with the code.</span>';
+  document.getElementById('ansbox').innerHTML='';document.getElementById('img').removeAttribute('src');prog();return;}
+ const it=ITEMS[cur];
+ document.getElementById('img').src=it.im;
+ document.getElementById('q').textContent=it.q;
+ const b=document.getElementById('ansbox');
+ if(it.m==='yn'){
+  b.innerHTML='<div class="yn"><button id="b1">YES (y)</button><button id="b2">NO (n)</button></div>';
+  document.getElementById('b1').onclick=()=>put('yes');
+  document.getElementById('b2').onclick=()=>put('no');
+ }else if(it.m==='ab'){
+  b.innerHTML='<div class="yn"><button id="b1">a</button><button id="b2">b</button></div>';
+  document.getElementById('b1').onclick=()=>put('a');
+  document.getElementById('b2').onclick=()=>put('b');
+ }else{
+  b.innerHTML='<input id="ans" autocomplete="off" placeholder="type answer, Enter to submit (type - if it cannot be read from the picture)"><div style="margin-top:6px;color:#444;font-size:13px">Cannot read it from the picture (not there, cut off, unreadable)? Type a single dash <b>-</b> and press Enter. It is never counted against you.</div>';
+  const el=document.getElementById('ans'); el.focus();
+  el.onkeydown=e=>{if(e.key==='Enter'){const v=el.value.trim();if(v.toLowerCase()==='k'){skip();}else if(v!==''){put(v);}}};
+ }
+ prog();
+}
+function put(v){A[ITEMS[cur].i]={a:v,t:Date.now()};save();cur++;show();}
+function skip(){A[ITEMS[cur].i]={a:null,s:true,t:Date.now()};save();cur++;show();}
+function back(){if(cur>0){cur--;delete A[ITEMS[cur].i];save();show();}}
+function save(){localStorage.setItem(LS_A,JSON.stringify(A));
+ document.getElementById('saved').textContent='saved '+Object.keys(A).length;flush();}
+function prog(){document.getElementById('prog').textContent=(Math.min(cur,ITEMS.length))+' / '+ITEMS.length+(WID?('  ·  '+WID):'');}
+function exp(){const blob=new Blob([lines().join('\n')+'\n'],{type:'application/jsonl'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+ a.download='answers_'+BATCH+'_'+(WID||'worker')+'.jsonl';a.click();}
+document.getElementById('bfile').onclick=pick;
+document.getElementById('bskip').onclick=skip;
+document.getElementById('bback').onclick=back;
+document.getElementById('bexp').onclick=exp;
+document.addEventListener('keydown',e=>{
+ if(document.getElementById('gate').style.display!=='none')return;
+ if(document.activeElement&&document.activeElement.id==='ans'&&e.key!=='Escape')return;
+ const it=ITEMS[cur];if(!it)return;
+ const k=e.key.toLowerCase();
+ if(it.m==='yn'&&k==='y')put('yes'); else if(it.m==='yn'&&k==='n')put('no');
+ else if(it.m==='ab'&&k==='a')put('a'); else if(it.m==='ab'&&k==='b')put('b');
+ else if(k==='k')skip();});
+window.addEventListener('beforeunload',e=>{if(!fh&&Object.keys(A).length&&cur<ITEMS.length){e.preventDefault();e.returnValue='';}});
+function start(){
+ const v=document.getElementById('wid').value.trim();
+ if(!v){document.getElementById('wid').focus();return;}
+ WID=v;localStorage.setItem(LS_W,v);
+ document.getElementById('gate').style.display='none';banner();show();
+}
+document.getElementById('bstart').onclick=start;
+document.getElementById('wid').addEventListener('keydown',e=>{if(e.key==='Enter')start();});
+if(WID){document.getElementById('wid').value=WID;}
+banner();prog();
+</script></body></html>
