@@ -1,7 +1,7 @@
 Image reading study
 ===================
 
-Open the batch page you were assigned (batch_01.html ... batch_10.html) in Chrome or
+Open the batch page you were assigned (batch_01.html ... batch_14.html) in Chrome or
 Edge, enter your Worker ID, and answer every question about the image shown.
 Answer exactly what is drawn — do not infer what 'should' be there.
 If the thing the question asks about is not present in the image at all, click the
@@ -43,6 +43,40 @@ list and stop at the first rule that applies:
      different answers  ->  click "I can't tell (the picture doesn't show it)".
      Do not guess which one was meant. That button is a correct answer here, not a
      refusal, and it is never counted against you.
+
+
+2b. WHOLE PICTURES WITH NUMBERED RECTANGLES
+------------------------------------------
+A few pictures are not close-up cut-outs at all. They are whole scenes with several
+rectangles drawn on them, each with a small number in its corner. Those rectangles
+were drawn on top afterwards, the same way the green one was; they are not part of
+what was printed or photographed.
+
+On those pictures the question is about the rectangles, and it says so. Two shapes
+come up. Some pictures carry only the second shape; some carry one of each, well
+apart in the batch. They are two different questions, so read each one on its own
+and answer it on its own.
+
+  a. "Is there any rectangle that does NOT hold exactly one <thing>?"  Go through
+     the rectangles one at a time and ask, of that rectangle on its own: does it
+     hold exactly one whole <thing>? Answer YES as soon as one of them does not --
+     it holds two, or none at all, or only part of one, or the thing inside it is
+     something else. Answer NO only if every rectangle holds exactly one whole one.
+     Do not assume the rectangles are right because they are drawn: some of them
+     are wrong, and finding those is what this question is for.
+  b. "Look for things of this kind: <thing>. Is there any one of them with NO
+     rectangle round it?"  This one is not about the rectangles you can see. It is
+     about the things that may have been left out, so look over the whole picture,
+     edges and corners included. Answer YES if you can find at least one of them
+     with no rectangle round it, NO if every one of them already has a rectangle.
+
+Neither question tells you the answer to the other one. Do not assume that every
+rectangle is right because the other question was asked, and do not assume anything
+was left out because you were asked to look.
+
+Count the rectangles as markings, never as objects in the scene. If the picture is
+too crowded or too blurred to decide, click "I can't tell (the picture doesn't show
+it)" rather than guessing.
 
 
 3. THREE KINDS OF DRAWING, IN PLAIN WORDS

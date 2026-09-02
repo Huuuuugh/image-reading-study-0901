@@ -1,0 +1,219 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Image reading study &mdash; batch_11</title>
+<style>
+ body{font-family:Segoe UI,Arial,sans-serif;margin:0;background:#181a20;color:#e8eaf0;display:flex;flex-direction:column;height:100vh}
+ header{padding:8px 16px;background:#20232b;display:flex;gap:10px;align-items:center;font-size:14px;flex-wrap:wrap}
+ #prog{color:#9aa4b8} button{background:#2d3340;color:#e8eaf0;border:1px solid #444;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:14px}
+ button:hover{border-color:#4a6cff} button:disabled{opacity:.42;cursor:default;border-color:#3a3f4c}
+ #banner{padding:7px 16px;font-size:13px;line-height:1.5;background:#4a2020;color:#ffd9d9;border-bottom:1px solid #7a3535}
+ #banner.ok{background:#1d3524;color:#c9f2d5;border-bottom-color:#2f5c3c}
+ #banner code{background:rgba(0,0,0,.35);padding:1px 6px;border-radius:4px}
+ main{flex:1;display:flex;min-height:0}
+ #imgwrap{flex:3;display:flex;align-items:center;justify-content:center;background:#101216;min-width:0}
+ #img{max-width:100%;max-height:100%;object-fit:contain}
+ #panel{flex:2;padding:22px;display:flex;flex-direction:column;gap:14px;max-width:560px;overflow-y:auto}
+ #q{font-size:18px;line-height:1.6;white-space:pre-wrap}
+ #ans{font-size:18px;padding:8px;background:#101216;color:#fff;border:1px solid #555;border-radius:6px;width:100%}
+ .yn button{font-size:20px;padding:10px 26px;margin:0 12px 10px 0}
+ .opts{display:flex;flex-wrap:wrap;gap:10px}
+ .opts button{font-size:17px;padding:10px 18px;text-align:left}
+ .opts .num{color:#8b93a6;font-size:13px;margin-right:7px}
+ #acts{display:flex;flex-wrap:wrap;gap:10px;border-top:1px solid #2d3340;padding-top:14px;margin-top:2px}
+ #bsubmit{background:#25406e;border-color:#4a6cff;font-size:16px;padding:9px 24px}
+ #bsubmit:disabled{background:#2d3340}
+ #bnotell{font-size:15px;padding:9px 16px} #bskip2{font-size:15px;padding:9px 16px}
+ #hint{color:#8b93a6;font-size:12px;line-height:1.6} .done{color:#5fd282;font-size:18px;line-height:1.7}
+ kbd{background:#2d3340;border-radius:3px;padding:1px 5px;font-size:12px}
+ #gate{position:fixed;inset:0;background:rgba(10,12,16,.96);display:flex;align-items:center;justify-content:center;z-index:9}
+ #gate .card{background:#20232b;border:1px solid #3a4152;border-radius:10px;padding:28px;max-width:660px;font-size:15px;line-height:1.7}
+ #gate input{font-size:16px;padding:8px;width:100%;background:#101216;color:#fff;border:1px solid #555;border-radius:6px;margin:10px 0}
+ #gate button{font-size:16px;padding:9px 22px}
+ code.cc{font-size:20px;background:#101216;padding:4px 10px;border-radius:6px;color:#ffd479}
+</style></head><body>
+<div id="gate"><div class="card">
+ <h2 style="margin-top:0">Image reading study &mdash; batch_11</h2>
+ <p>You will see a series of images (some are close-up cut-outs of a larger picture), each with
+ one short question. <b>Answer exactly what is drawn in the image shown</b> &mdash; do not infer what
+ "should" be there, and do not correct anything that looks wrong.</p>
+ <p>Some cut-outs have a <b>bright green rectangle</b> drawn on them and the rest of the cut-out
+ dimmed. The green rectangle marks the thing the question is about. It was drawn on top
+ afterwards, so never answer with its colour, size or position, and never count it as an object
+ in the picture.</p>
+ <p>A few pictures are <b>whole scenes</b> with several <b>numbered rectangles</b>
+ drawn on them. On those, the question is about the rectangles themselves and says so 
+ &mdash; read it and answer about them. The rectangles were drawn on top afterwards; 
+ everything else in those pictures is the picture.</p>
+ <p>How to answer: when the question offers a list of choices, <b>click one of the choice
+ buttons</b>. Yes-no questions have YES and NO buttons. Everything else is typed in the box and
+ sent with the <b>Submit</b> button. Three buttons sit under every question:</p>
+ <ul>
+  <li><b>Submit</b> &mdash; send the answer you typed.</li>
+  <li><b>I can't tell (the picture doesn't show it)</b> &mdash; the thing asked about is not
+      there, is cut off, or cannot be read. This is a correct answer, not a refusal, and it is
+      never counted against you.<br>
+      On a clear picture answer yes or no; use can't tell only when the picture truly does not
+      show it. On a clear picture it counts as a wrong answer.</li>
+  <li><b>Skip this question</b> &mdash; leave it unanswered and move on. Only if answering is
+      truly impossible.</li>
+ </ul>
+ <p>Keyboard shortcuts still work if you prefer them: <kbd>y</kbd>/<kbd>n</kbd>,
+ <kbd>a</kbd>/<kbd>b</kbd>, <kbd>1</kbd>..<kbd>9</kbd> for the choice buttons,
+ <kbd>Enter</kbd> to submit, <kbd>k</kbd> to skip.
+ Lists: comma-separated, in the order the question specifies.</p>
+ <p>Your progress is saved in this browser; you can close and resume. When every question is
+ answered you will get a completion code.</p>
+ <p><b>Enter your Worker ID to begin:</b></p>
+ <input id="wid" autocomplete="off" placeholder="e.g. A2ABCDEFG12345">
+ <button id="bstart">Start</button>
+</div></div>
+<header><b>batch_11</b><span id="prog"></span>
+<button id="bfile">choose autosave file</button>
+<button id="bback">back</button>
+<button id="bexp">export JSONL</button><span id="saved"></span></header>
+<div id="banner"></div>
+<main><div id="imgwrap"><img id="img" alt=""></div>
+<div id="panel"><div id="q"></div>
+ <div id="ansbox"></div>
+ <div id="acts">
+  <button id="bsubmit" disabled>Submit</button>
+  <button id="bnotell">I can't tell (the picture doesn't show it)</button>
+  <button id="bskip2">Skip this question</button>
+ </div>
+ <div id="hint">Answer exactly what is DRAWN in the image. Do not infer what "should" be there.<br>
+ A bright green rectangle, if there is one, marks the thing the question is about; never answer
+ about the rectangle itself.<br>
+ On a whole scene with numbered rectangles, the question IS about those rectangles.<br>
+ On a clear picture answer yes or no; use can't tell only when the picture truly does not show it.<br>
+ Buttons do everything. Shortcuts: <kbd>y</kbd>/<kbd>n</kbd> yes-no &middot; <kbd>a</kbd>/<kbd>b</kbd> a-b &middot;
+ <kbd>1</kbd>..<kbd>9</kbd> choices &middot; <kbd>Enter</kbd> submit &middot; <kbd>k</kbd> skip.<br>
+ Lists: comma-separated, in the order the question specifies.</div></div></main>
+<script>
+const ITEMS=[{"i": "qea343d240291", "im": "images/272c459abbf0b2fa.png", "q": "Does this picture show one whole domino tile with both of its pip halves rather than bare tabletop or only half a tile? Answer yes or no.", "m": "yn"}, {"i": "q22a3e084289a", "im": "images/d971fedac4bf9529.jpg", "q": "Rectangles have been drawn on this picture. Look for things of this kind: numbered peg at the headland end of a crop row. Is there any one of them with NO rectangle round it? Answer yes or no.", "m": "yn"}, {"i": "qe4918585f3e7", "im": "images/161887f8a6baab9d.png", "q": "Does this cut-out hold ONE whole outlined square with an exposure cross at its centre, rather than part of one or none at all? Answer yes or no.", "m": "yn"}, {"i": "qa708b9e70970", "im": "images/70dd53989fe4d78b.png", "q": "Does this cut-out show ONE whole block, rather than part of one or more than one? Answer yes or no.", "m": "yn"}, {"i": "q59ed6ab2a26d", "im": "images/079f26386342801b.jpg", "q": "This picture has 12 numbered rectangles drawn on it. Each rectangle is meant to hold exactly one thing of this kind: one square cell of the horizontal strip painted solid black. Is there any rectangle that does NOT hold exactly one? Answer yes or no.", "m": "yn"}, {"i": "q7bf0a52dc5e0", "im": "images/8c973ccfeaf712d0.png", "q": "Does this close-up show a pencil line drawn on the wood -- a deliberate straight pencil mark, not the wood's own grain and not the edge of the board? Answer yes or no.", "m": "yn"}, {"i": "q4d807e53d237", "im": "images/e7b7e0943e36ab80.png", "q": "In this cut-out, is a number written on the tape on the lantern's yoke? Answer yes or no.", "m": "yn"}, {"i": "q52021d63e349", "im": "images/f7ca092eca7d24f6.jpg", "q": "Rectangles have been drawn on this picture. Look for things of this kind: group of playing cards on the table beside one of the four seat nameplates. Is there any one of them with NO rectangle round it? Answer yes or no.", "m": "yn"}, {"i": "qfec3e2936fad", "im": "images/ec7ed2e9fe96d721.jpg", "q": "Rectangles have been drawn on this picture. Look for things of this kind: round metal bowl seen from directly above. Is there any one of them with NO rectangle round it? Answer yes or no.", "m": "yn"}, {"i": "q9f2716c737b5", "im": "images/839917bf469f4974.jpg", "q": "Rectangles have been drawn on this picture. Look for things of this kind: a table of limits, a line of arithmetic or a note added beyond the gauge, the drawing extract and the card. Is there any one of them with NO rectangle round it? Answer yes or no.", "m": "yn"}, {"i": "q5c2dbef74c03", "im": "images/3e3bb1cf871a6efb.png", "q": "Does this cut-out show ONE label beside a hole, rather than part of one or more than one? Answer yes or no.", "m": "yn"}, {"i": "q307a4d42eb54", "im": "images/6f1d4e2004c46c62.png", "q": "Does this cut-out show ONE whole filled swatch with printed lines under it, rather than the sheet head or only part of one? Answer yes or no.", "m": "yn"}, {"i": "qe7e288e8a52c", "im": "images/2c18474b81322f0e.png", "q": "Does this cut-out show ONE whole cipher glyph -- a complete bracket of straight strokes or a complete V-shaped wedge, together with any dot sitting inside it -- rather than a single stroke, part of a glyph, or two glyphs side by side? Answer yes or no.", "m": "yn"}, {"i": "q3e06f72429aa", "im": "images/401066dcdfe5286f.png", "q": "In this cut-out, is a peg with a number on it driven into the soil beside this tree? Answer yes or no.", "m": "yn"}, {"i": "q08de5c22be21", "im": "images/55f1b337d7ce34fc.png", "q": "This image was supposed to depict stainless vernier caliper measuring an aluminium tent-pole ferrule diameter at a campsite, its main and vernier scales geometrically consistent with the demanded reading, straight-on. Ignoring artistic quality, does the image actually DEPICT that requested subject / carrier / scene -- the physical object, document, board, or diagram it describes? A realistic photo, an illustration, a schematic or a clean diagram of the requested subject ALL count as yes. Answer NO only if the image instead shows just a blank card or plain panel that prints an answer with none of the requested subject depicted, or shows something unrelated. Answer yes or no only.", "m": "yn"}, {"i": "q77eb8ff2b097", "im": "images/f74680e14cb41835.png", "q": "Does this cut-out show ONE whole upright column of the five data tracks with at least one big punched hole in it, rather than only the small round feed holes along the middle, blank paper, or part of a column? Answer yes or no.", "m": "yn"}, {"i": "q6b57ba559374", "im": "images/c1ba3b4ceef4b0ea.png", "q": "This image was supposed to show a comic strip: several separate panels, drawn side by side, with the same small group of people appearing together in each panel. Ignoring artistic quality and ignoring whether the story is right, does the image DEPICT that — a strip of separate panels with a recurring group of figures? A comic page, a storyboard or a picture-book strip all count as yes. Answer NO only if it is blank, a single picture with no panels, or something unrelated. Answer yes or no only.", "m": "yn"}, {"i": "qbafa7480732e", "im": "images/137f92719aab4447.jpg", "q": "This picture has 2 numbered rectangles drawn on it. Each rectangle is meant to hold exactly one thing of this kind: unbroken run of linked sausages with bare board at both of its ends. Is there any rectangle that does NOT hold exactly one? Answer yes or no.", "m": "yn"}, {"i": "qe277f778d241", "im": "images/0b9121d074a3e401.png", "q": "Does this cut-out hold ONE whole close-up of painted draught marks with a single word captioning it, rather than part of one or none at all? Answer yes or no.", "m": "yn"}, {"i": "qa4745dfea2e9", "im": "images/6d5aac8c7210d72f.png", "q": "Does this cut-out show ONE whole seat position of the round table carrying its own printed seat number, rather than bare tabletop, the SURVIVOR box, or only part of a seat? Answer yes or no.", "m": "yn"}, {"i": "q04dc9d0a91e4", "im": "images/929272ba798f40eb.jpg", "q": "This picture has 4 numbered rectangles drawn on it. Each rectangle is meant to hold exactly one thing of this kind: line of the boundary table headed PLOT 12-3. Is there any rectangle that does NOT hold exactly one? Answer yes or no.", "m": "yn"}, {"i": "q62f44a01bc77", "im": "images/536e16fd5817d9e4.jpg", "q": "Rectangles have been drawn on this picture. Look for things of this kind: one printed course row of the transcript table, listing one course and its mark. Is there any one of them with NO rectangle round it? Answer yes or no.", "m": "yn"}, {"i": "q98320a459a8c", "im": "images/70ebdc9850fd03b2.png", "q": "Does this cut-out show ONE whole square cell of the grid with exactly one chalk number written inside it, rather than an empty cell or only part of a cell? Answer yes or no.", "m": "yn"}, {"i": "q352161b65c39", "im": "images/e88c79007038c319.jpg", "q": "This picture has 5 numbered rectangles drawn on it. Each rectangle is meant to hold exactly one thing of this kind: one square cell in the left-hand column of the grid board. Is there any rectangle that does NOT hold exactly one? Answer yes or no.", "m": "yn"}, {"i": "qb969408ef95c", "im": "images/32ec91cd61075afc.jpg", "q": "Rectangles have been drawn on this picture. Look for things of this kind: grid crossing on the site plan with its name and its figure beside it. Is there any one of them with NO rectangle round it? Answer yes or no.", "m": "yn"}, {"i": "q66f964503855", "im": "images/ea59e770d1c0cced.png", "q": "Does this picture show ONE whole handwritten line with a person's name and a money amount beside it, rather than bare napkin or only part of a line? Answer yes or no.", "m": "yn"}, {"i": "qd62648187c45", "im": "images/ee94ec853f09135e.png", "q": "In this cut-out, is a small written label threaded on the pin below the insect? Answer yes or no.", "m": "yn"}, {"i": "qc59f5cab8fe2", "im": "images/b0180d988603efad.png", "q": "Does this cut-out show ONE whole boot print in the mud, rather than a smear, an overlap of two prints, or plain mud? Answer yes or no.", "m": "yn"}, {"i": "q32a918644902", "im": "images/079f26386342801b.jpg", "q": "Rectangles have been drawn on this picture. Look for things of this kind: one square cell of the horizontal strip painted solid black. Is there any one of them with NO rectangle round it? Answer yes or no.", "m": "yn"}, {"i": "q95a56345a3ab", "im": "images/d7097e20ed064d37.jpg", "q": "Rectangles have been drawn on this picture. Look for things of this kind: one coloured square sticker in the flat grid of the cube face. Is there any one of them with NO rectangle round it? Answer yes or no.", "m": "yn"}, {"i": "q2f885f6e0aec", "im": "images/52dc0e045c1309f6.jpg", "q": "Rectangles have been drawn on this picture. Look for things of this kind: row of the localisation note under the films. Is there any one of them with NO rectangle round it? Answer yes or no.", "m": "yn"}, {"i": "q465c0eee59a9", "im": "images/02a16f7dda797c57.png", "q": "Does this picture show ONE whole square sticker of a single solid colour, rather than the background or only part of a sticker? Answer yes or no.", "m": "yn"}, {"i": "qf9480f1e4b85", "im": "images/5c8dad924c7f0bbc.png", "q": "Does this cut-out show ONE whole injection vial, rather than the bare screen or only part of a vial? Answer yes or no.", "m": "yn"}, {"i": "q179462f6660d", "im": "images/ede0812232f812da.jpg", "q": "Rectangles have been drawn on this picture. Look for things of this kind: an arrow or a written reading laid over the photograph. Is there any one of them with NO rectangle round it? Answer yes or no.", "m": "yn"}, {"i": "q1b889908d046", "im": "images/f1247bb7aca748c7.png", "q": "This close-up shows one WHOLE round bead of a strand, together with parts of its neighbours cut off at the edges. Look at the one whole, fully-visible bead (ignore any partial beads at the edges). Is that bead RED in colour? Answer no if it is orange, yellow, pink, purple, green, cyan or blue, and no if no whole bead is visible here. Answer yes or no.", "m": "yn"}, {"i": "q25be750f7cb0", "im": "images/18a265f44084fc99.jpg", "q": "Rectangles have been drawn on this picture. Look for things of this kind: short label printed where a line meets a box on the schema sheet. Is there any one of them with NO rectangle round it? Answer yes or no.", "m": "yn"}, {"i": "q1f60cad7f8a7", "im": "images/2e7c628ba3d0fc9e.png", "q": "Does this cut-out show ONE whole table row carrying one item name and one quantity, rather than an empty strip, only part of a row, or two rows stacked together? Answer yes or no.", "m": "yn"}, {"i": "qfbb90b012c68", "im": "images/df0167b5a3a14e1c.png", "q": "Does this cut-out show ONE whole table row carrying one item name and one quantity, rather than an empty strip, only part of a row, or two rows stacked together? Answer yes or no.", "m": "yn"}, {"i": "q1e28a725def6", "im": "images/1e34949050352148.png", "q": "Does this cut-out show ONE whole line of the table, rather than a heading or only part of a line? Answer yes or no.", "m": "yn"}, {"i": "q6b68adaabc67", "im": "images/9fa60e6dc037a80d.png", "q": "Does this picture show one complete printed data line of the table, not the bold heading line and not blank paper? Answer yes or no.", "m": "yn"}, {"i": "q1ec4f1c78cb4", "im": "images/4e8f347090d6992f.png", "q": "Does this cut-out show ONE whole photograph of a metal joint, rather than the heading strip or bare page? Answer yes or no.", "m": "yn"}, {"i": "qe4b26265cb6d", "im": "images/137f92719aab4447.jpg", "q": "Rectangles have been drawn on this picture. Look for things of this kind: unbroken run of linked sausages with bare board at both of its ends. Is there any one of them with NO rectangle round it? Answer yes or no.", "m": "yn"}, {"i": "q776435b666c2", "im": "images/1d77d7f1557ae3da.png", "q": "Does this picture show ONE whole square sticker of a single solid colour, rather than the background or only part of a sticker? Answer yes or no.", "m": "yn"}, {"i": "qbf5bfde64aea", "im": "images/75911f7635b2d241.png", "q": "This image was supposed to depict stainless vernier caliper measuring an aluminium tent-pole ferrule diameter at a campsite, its main and vernier scales geometrically consistent with the demanded reading, straight-on. Ignoring artistic quality, does the image actually DEPICT that requested subject / carrier / scene -- the physical object, document, board, or diagram it describes? A realistic photo, an illustration, a schematic or a clean diagram of the requested subject ALL count as yes. Answer NO only if the image instead shows just a blank card or plain panel that prints an answer with none of the requested subject depicted, or shows something unrelated. Answer yes or no only.", "m": "yn"}, {"i": "qac899e12f27d", "im": "images/929272ba798f40eb.jpg", "q": "Rectangles have been drawn on this picture. Look for things of this kind: line of the boundary table headed PLOT 12-3. Is there any one of them with NO rectangle round it? Answer yes or no.", "m": "yn"}, {"i": "q982b52fbae54", "im": "images/aaa02a7854fa9d12.png", "q": "This image was supposed to show a sheet of pale card printed with lots of small round black dots laid out in rows and columns. Ignoring artistic quality, and ignoring whether the dots are the right number or evenly spread or not, does the image DEPICT that? Answer NO only if the picture is unrelated to that description or contains no such arrangement at all. Answer yes or no only.", "m": "yn"}, {"i": "q1c58ac823818", "im": "images/6c53dcc080814aec.jpg", "q": "Rectangles have been drawn on this picture. Look for things of this kind: numbered pin flag with the stitched stroke beside it. Is there any one of them with NO rectangle round it? Answer yes or no.", "m": "yn"}, {"i": "q37b74f63cd3a", "im": "images/e88c79007038c319.jpg", "q": "Rectangles have been drawn on this picture. Look for things of this kind: one square cell in the left-hand column of the grid board. Is there any one of them with NO rectangle round it? Answer yes or no.", "m": "yn"}, {"i": "q442685bc9f19", "im": "images/bc2a45c2179953f6.png", "q": "Does this picture show ONE whole square cell filled solid black, rather than a white cell or only part of a cell? Answer yes or no.", "m": "yn"}];
+const BATCH="batch_11";
+const LS_A='go3_'+BATCH+'_ans', LS_W='go3_'+BATCH+'_wid';
+let A=JSON.parse(localStorage.getItem(LS_A)||'{}');
+let WID=localStorage.getItem(LS_W)||'';
+let cur=0; while(cur<ITEMS.length && A[ITEMS[cur].i]!==undefined) cur++;
+
+function djb2(s){let h=5381;for(let i=0;i<s.length;i++){h=(Math.imul(h,33)^s.charCodeAt(i))>>>0;}return h;}
+function ccode(){return 'GO3-'+BATCH.replace('batch_','')+'-'+djb2(WID.trim()+'|'+BATCH+'|'+ITEMS.length).toString(16);}
+
+let fh=null, chain=Promise.resolve(), fname='';
+const FSA=(typeof window.showSaveFilePicker==='function') && window.isSecureContext;
+function lines(){return ITEMS.filter(it=>A[it.i]!==undefined).map(it=>JSON.stringify(
+  {iid:it.i,b:BATCH,w:WID,a:A[it.i].a,s:!!A[it.i].s,t:A[it.i].t}));}
+async function pick(){
+ if(!FSA){banner();return;}
+ try{
+  fh=await window.showSaveFilePicker({suggestedName:'answers_'+BATCH+'_'+(WID||'worker')+'.jsonl',
+      types:[{description:'JSON Lines',accept:{'text/plain':['.jsonl']}}]});
+  fname=fh.name||'file'; await flush(); banner();
+ }catch(e){}
+}
+function flush(){
+ chain=chain.then(async()=>{
+  if(!fh)return;
+  const w=await fh.createWritable();
+  await w.write(lines().join('\n')+'\n'); await w.close();
+ }).catch(e=>{fh=null;banner();});
+ return chain;
+}
+function banner(){
+ const b=document.getElementById('banner');
+ if(fh){b.className='ok';b.innerHTML='Autosave ON &mdash; every answer is written straight to <b>'+fname+'</b>.';}
+ else if(FSA){b.className='';b.innerHTML='<b>Autosave is OFF.</b> Answers live only in this browser &mdash; click <b>choose autosave file</b> to write every answer into a .jsonl as you go, and export before closing.';}
+ else{b.className='';b.innerHTML='<b>Autosave unavailable in this browser</b> (no File System Access API &mdash; Firefox/Safari). Use Chrome or Edge if you can. Until then answers live in localStorage only &mdash; export regularly.';}
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function acts(on){
+ document.getElementById('bnotell').disabled=!on;
+ document.getElementById('bskip2').disabled=!on;
+ if(!on){document.getElementById('bsubmit').disabled=true;}
+}
+function show(){
+ if(cur>=ITEMS.length){
+  document.getElementById('q').innerHTML='<span class=done>All done &mdash; thank you!<br>'+
+   'Your completion code: <code class=cc>'+ccode()+'</code><br>'+
+   'Click <b>export JSONL</b> and submit the file together with the code.</span>';
+  document.getElementById('ansbox').innerHTML='';document.getElementById('img').removeAttribute('src');
+  acts(false);prog();return;}
+ acts(true);
+ const it=ITEMS[cur];
+ document.getElementById('img').src=it.im;
+ document.getElementById('q').textContent=it.q;
+ const b=document.getElementById('ansbox');
+ const sub=document.getElementById('bsubmit');
+ if(it.m==='yn'){
+  b.innerHTML='<div class="yn"><button id="b1">YES (y)</button><button id="b2">NO (n)</button></div>';
+  document.getElementById('b1').onclick=()=>put('yes');
+  document.getElementById('b2').onclick=()=>put('no');
+  sub.disabled=true;sub.title='Pick YES or NO above.';
+ }else if(it.m==='ab'){
+  b.innerHTML='<div class="yn"><button id="b1">a</button><button id="b2">b</button></div>';
+  document.getElementById('b1').onclick=()=>put('a');
+  document.getElementById('b2').onclick=()=>put('b');
+  sub.disabled=true;sub.title='Pick a or b above.';
+ }else if(it.o&&it.o.length){
+  let h='<div class="opts">';
+  for(let j=0;j<it.o.length;j++){h+='<button class="opt" data-j="'+j+'"><span class="num">'+(j+1)+'</span>'+esc(it.o[j])+'</button>';}
+  b.innerHTML=h+'</div>';
+  Array.prototype.forEach.call(b.querySelectorAll('button.opt'),
+    el=>{el.onclick=()=>put(it.o[parseInt(el.getAttribute('data-j'),10)]);});
+  sub.disabled=true;sub.title='Pick one of the choices above.';
+ }else{
+  b.innerHTML='<input id="ans" autocomplete="off" placeholder="type the answer, then click Submit">';
+  const el=document.getElementById('ans'); el.focus();
+  sub.title='Send the answer you typed.';
+  const upd=()=>{sub.disabled=(el.value.trim()==='');};
+  el.oninput=upd; upd();
+  el.onkeydown=e=>{if(e.key==='Enter'){submit();}};
+ }
+ prog();
+}
+function submit(){
+ const it=ITEMS[cur];if(!it)return;
+ const el=document.getElementById('ans');
+ if(!el)return;
+ const v=el.value.trim();
+ if(v==='')return;
+ if(v.toLowerCase()==='k'){skip();return;}
+ put(v);
+}
+function put(v){A[ITEMS[cur].i]={a:v,t:Date.now()};save();cur++;show();}
+function notell(){if(cur<ITEMS.length)put('-');}
+function skip(){if(cur>=ITEMS.length)return;A[ITEMS[cur].i]={a:null,s:true,t:Date.now()};save();cur++;show();}
+function back(){if(cur>0){cur--;delete A[ITEMS[cur].i];save();show();}}
+function save(){localStorage.setItem(LS_A,JSON.stringify(A));
+ document.getElementById('saved').textContent='saved '+Object.keys(A).length;flush();}
+function prog(){document.getElementById('prog').textContent=(Math.min(cur,ITEMS.length))+' / '+ITEMS.length+(WID?('  ·  '+WID):'');}
+function exp(){const blob=new Blob([lines().join('\n')+'\n'],{type:'application/jsonl'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+ a.download='answers_'+BATCH+'_'+(WID||'worker')+'.jsonl';a.click();}
+document.getElementById('bfile').onclick=pick;
+document.getElementById('bback').onclick=back;
+document.getElementById('bexp').onclick=exp;
+document.getElementById('bsubmit').onclick=submit;
+document.getElementById('bnotell').onclick=notell;
+document.getElementById('bskip2').onclick=skip;
+document.addEventListener('keydown',e=>{
+ if(document.getElementById('gate').style.display!=='none')return;
+ if(document.activeElement&&document.activeElement.id==='ans'&&e.key!=='Escape')return;
+ const it=ITEMS[cur];if(!it)return;
+ const k=e.key.toLowerCase();
+ if(it.m==='yn'&&k==='y')put('yes'); else if(it.m==='yn'&&k==='n')put('no');
+ else if(it.m==='ab'&&k==='a')put('a'); else if(it.m==='ab'&&k==='b')put('b');
+ else if(it.o&&it.o.length&&/^[1-9]$/.test(k)&&parseInt(k,10)<=it.o.length)put(it.o[parseInt(k,10)-1]);
+ else if(k==='k')skip();});
+window.addEventListener('beforeunload',e=>{if(!fh&&Object.keys(A).length&&cur<ITEMS.length){e.preventDefault();e.returnValue='';}});
+function start(){
+ const v=document.getElementById('wid').value.trim();
+ if(!v){document.getElementById('wid').focus();return;}
+ WID=v;localStorage.setItem(LS_W,v);
+ document.getElementById('gate').style.display='none';banner();show();
+}
+document.getElementById('bstart').onclick=start;
+document.getElementById('wid').addEventListener('keydown',e=>{if(e.key==='Enter')start();});
+if(WID){document.getElementById('wid').value=WID;}
+banner();prog();
+</script></body></html>
