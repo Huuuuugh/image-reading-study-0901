@@ -4,8 +4,11 @@ Image reading study
 Open the batch page you were assigned (batch_01.html ... batch_10.html) in Chrome or
 Edge, enter your Worker ID, and answer every question about the image shown.
 Answer exactly what is drawn — do not infer what 'should' be there.
-If the thing the question asks about is not present in the image at all, answer with
-a single dash -
+If the thing the question asks about is not present in the image at all, click the
+button "I can't tell (the picture doesn't show it)".
+On a clear picture answer yes or no; use can't tell only when the picture truly
+does not show it. On a picture that does show it, can't tell counts as a wrong
+answer, the same as answering the wrong way round.
 Count an item only if it is more than half visible; ignore anything cut in half or
 less by the edge of the picture.
 The images are AI-generated and may contain garbled text, misaligned layouts, or
@@ -16,11 +19,13 @@ answer file and submit both.
 
 1. THE BRIGHT GREEN RECTANGLE
 -----------------------------
-Some pictures have a thin bright-green rectangle drawn on them. The green rectangle
-marks the thing the question is asking about. It was drawn on top of the picture
-afterwards: it is not part of what was printed or photographed. So never answer with
-the colour, size or position of the green rectangle itself, and never count it as an
-object in the picture.
+Some pictures have a thin bright-green rectangle drawn on them, with everything
+outside the rectangle darkened. The green rectangle marks the thing the question is
+asking about; the darkening is only there to make it stand out. Both were drawn on
+top of the picture afterwards: neither is part of what was printed or photographed.
+So never answer with the colour, size or position of the green rectangle itself,
+never count it as an object in the picture, and do not treat the darkened part as
+being in shadow or unlit.
 
 
 2. WHICH ONE, WHEN THE PICTURE HOLDS SEVERAL
@@ -35,8 +40,8 @@ list and stop at the first rule that applies:
   c. No green rectangle, two or more are more than half visible, but they would all
      give the same answer  ->  give that answer.
   d. No green rectangle, two or more are more than half visible, and they would give
-     different answers  ->  answer with a single dash -
-     Do not guess which one was meant. A dash here is a correct answer, not a
+     different answers  ->  click "I can't tell (the picture doesn't show it)".
+     Do not guess which one was meant. That button is a correct answer here, not a
      refusal, and it is never counted against you.
 
 
@@ -80,4 +85,29 @@ numeric display on a machine's front panel.
   e. When a question asks for several values, separate them with single commas and
      no spaces (4,4,2,0), in the order the question names.
   f. Yes-no and a-b answers are entered with the page's buttons or the y / n / a / b
-     keys; write nothing else in those.
+     keys; write nothing else in those. Those questions have the "I can't tell"
+     button too, for the picture that does not show the thing at all.
+  g. When the question prints the list of words you may answer with, the page shows
+     one button per word, spelled exactly as the question spells it. Click the one
+     that fits. If none of them fits because the picture does not show the thing,
+     click "I can't tell (the picture doesn't show it)".
+
+
+5. THE FOUR BUTTONS UNDER EVERY QUESTION
+----------------------------------------
+  Submit                                  sends the answer you typed in the box.
+                                          Pressing Enter in the box does the same.
+  A choice button (YES / NO / a / b /     sends that choice straight away. There is
+  one of the printed words)               nothing else to click.
+  I can't tell (the picture doesn't       the thing asked about is not there, is cut
+  show it)                                off, or cannot be read. A correct answer,
+                                          never counted against you. On a clear
+                                          picture answer yes or no; use can't tell
+                                          only when the picture truly does not show
+                                          it. It works on every question, yes-no
+                                          and a-b ones included.
+  Skip this question                      leaves it unanswered and moves on. Use it
+                                          only when answering is truly impossible.
+
+"back" in the top bar reopens the previous question and clears its answer, so a
+mis-click is undone in one step.
