@@ -173,8 +173,9 @@ function show(){
    '<b style="font-size:20px;color:#e8eaf0">Three short steps. All three are needed for you to be paid.</b><br>'+
    '<b style="'+SN+'">Step 1 of 3.</b> Copy your answers.<br>'+
    'Click <b>Copy my answers</b>, then paste them into the last box of the form in step 2.<br>'+
+   'If copying fails, use the text backup and drag the file onto <a href="https://drop.xih.au/upload/3" target="_blank" rel="noopener noreferrer" style="color:#8ab4ff">https://drop.xih.au/upload/3</a><br>'+
    '<button id="bcopy" style="'+BIG+'">Copy my answers</button>'+
-   '<button id="bexpdone" style="'+SEC+'">Export JSONL (backup)</button><br>'+
+   '<button id="bexpdone" style="'+SEC+'">Export as text (backup)</button><br>'+
    '<textarea id="copyta" readonly style="display:none;width:96%;height:90px;margin:6px 0;background:#101216;color:#e8eaf0;border:1px solid #3a3f4c;font-size:12px"></textarea>'+
    '<div id="copynote" style="font-size:16px;color:#c9cede;line-height:1.5"></div>'+
    '<b style="'+SN+'">Step 2 of 3.</b> Open the answer return form. Your Prolific ID, the batch name and the completion code are filled in for you.<br>'+
@@ -186,7 +187,10 @@ function show(){
    '<div id="p3note" style="color:#8b93a6;font-size:13px;line-height:1.5"></div>'+
    (CC?('<div id="bkcode" style="font-size:18px;color:#e8eaf0;line-height:1.6;margin-top:6px">If the button does not take you back, enter this completion code on Prolific: <code class=cc>'+CC+'</code></div>'):'')+
    '</span>';
-  document.getElementById('bexpdone').onclick=exp;
+  function expTxt(){const blob=new Blob([lines().join('\n')+'\n'],{type:'text/plain'});
+   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+   a.download='answers_'+BATCH+'_'+(WID||'worker')+'.txt';a.click();}
+  document.getElementById('bexpdone').onclick=expTxt;
   const bcopy=document.getElementById('bcopy'), cnote=document.getElementById('copynote');
   const cta=document.getElementById('copyta');
   function copyFallback(txt){
