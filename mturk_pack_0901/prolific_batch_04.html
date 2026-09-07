@@ -25,7 +25,6 @@
  #bnotell{font-size:15px;padding:9px 16px} #bskip2{font-size:15px;padding:9px 16px}
  #bnone{font-size:15px;padding:9px 16px}
  #bback{background:#25406e;border:1px solid #4a6cff;color:#fff;font-size:16px;padding:9px 22px}
- #bexpdone{background:#25406e;border:1px solid #4a6cff;color:#fff;font-size:17px;padding:10px 22px;margin-top:10px}
  #hint{color:#8b93a6;font-size:12px;line-height:1.6} .done{color:#5fd282;font-size:18px;line-height:1.7}
  kbd{background:#2d3340;border-radius:3px;padding:1px 5px;font-size:12px}
  #gate{position:fixed;inset:0;background:rgba(10,12,16,.96);display:flex;align-items:flex-start;justify-content:center;z-index:9;overflow-y:auto;padding:24px 12px;box-sizing:border-box}
@@ -80,8 +79,7 @@
  <button id="bstart">Start</button>
 </div></div>
 <header><b>batch_04</b><span id="prog"></span>
-<button id="bfile">choose autosave file</button>
-<button id="bexp">export JSONL</button><span id="saved"></span></header>
+<span id="saved"></span></header>
 <div id="banner"></div>
 <main><div id="imgwrap"><img id="img" alt=""></div>
 <div id="panel"><div id="q"></div>
@@ -113,31 +111,13 @@ let cur=0; while(cur<ITEMS.length && A[ITEMS[cur].i]!==undefined) cur++;
 function djb2(s){let h=5381;for(let i=0;i<s.length;i++){h=(Math.imul(h,33)^s.charCodeAt(i))>>>0;}return h;}
 function ccode(){return 'GO3-'+BATCH.replace('batch_','')+'-'+djb2(WID.trim()+'|'+BATCH+'|'+ITEMS.length).toString(16);}
 
-let fh=null, chain=Promise.resolve(), fname='';
-const FSA=(typeof window.showSaveFilePicker==='function') && window.isSecureContext;
+let fh=null;
 function lines(){return ITEMS.filter(it=>A[it.i]!==undefined).map(it=>JSON.stringify(
   {iid:it.i,b:BATCH,w:WID,a:A[it.i].a,s:!!A[it.i].s,t:A[it.i].t}));}
-async function pick(){
- if(!FSA){banner();return;}
- try{
-  fh=await window.showSaveFilePicker({suggestedName:'answers_'+BATCH+'_'+(WID||'worker')+'.jsonl',
-      types:[{description:'JSON Lines',accept:{'text/plain':['.jsonl']}}]});
-  fname=fh.name||'file'; await flush(); banner();
- }catch(e){}
-}
-function flush(){
- chain=chain.then(async()=>{
-  if(!fh)return;
-  const w=await fh.createWritable();
-  await w.write(lines().join('\n')+'\n'); await w.close();
- }).catch(e=>{fh=null;banner();});
- return chain;
-}
+function flush(){}
 function banner(){
  const b=document.getElementById('banner');
- if(fh){b.className='ok';b.innerHTML='Autosave ON &mdash; every answer is written straight to <b>'+fname+'</b>.';}
- else if(FSA){b.className='';b.innerHTML='<b>Autosave is OFF.</b> Answers live only in this browser &mdash; click <b>choose autosave file</b> to write every answer into a .jsonl as you go, and export before closing.';}
- else{b.className='';b.innerHTML='<b>Autosave unavailable in this browser</b> (no File System Access API &mdash; Firefox/Safari). Use Chrome or Edge if you can. Until then answers live in localStorage only &mdash; export regularly.';}
+ b.className='ok';b.innerHTML='Your answers are kept in this browser as you go, and they are sent to us automatically on the last screen. Please finish in one sitting and do not clear your browsing data.';
 }
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function acts(on){
@@ -170,7 +150,6 @@ function show(){
   const SN='font-size:22px;color:#e8eaf0';
   const NOTE='font-size:16px;color:#c9cede;line-height:1.5';
   const ERRL='font-size:20px;color:#ffb4a2;line-height:1.5;margin:0 0 10px 0';
-  const SEC='display:inline-block;margin:8px 8px 4px 0;padding:12px 20px;border-radius:8px;background:#2d3340;border:1px solid #4a5062;color:#e8eaf0;font-size:16px;cursor:pointer';
   const PAGE_SHA='v7.5.2/prolific/done_v3';
   const RPT_URL='https://report.xih.au/submit';
   const RPT_WAITS=[1000,3000,8000];
@@ -178,9 +157,6 @@ function show(){
   const RPID=/^[0-9a-fA-F]{24}$/.test(String(WID||'').trim())?String(WID).trim():'000000000000000000000000';
   const qel=document.getElementById('q');
   function ansTxt(){return lines().join('\n')+'\n';}
-  function saveTxt(){const blob=new Blob([ansTxt()],{type:'text/plain'});
-   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-   a.download='answers_'+BATCH+'_'+(WID||'worker')+'.txt';a.click();}
   function mark(v){try{localStorage.setItem(LS_R,v);}catch(e){}}
   function renderSaving(){
    qel.innerHTML='<span class=done>'+
@@ -195,33 +171,24 @@ function show(){
       'Your completion code: <code class=cc>'+CC+'</code></div>'):'')+
     (retok?('<a id="bret" href="'+RU+'" style="'+LS+'">Return to Prolific</a>')
           :('<span id="bret_off" style="'+LD+'">Return link: not set up yet</span>'))+
-    '<br><button id="bsave" style="'+SEC+'">Save a backup copy (.txt)</button>'+
     '<div style="'+NOTE+'">Nothing else is needed from you. If the button does not take you back, enter the completion code above on Prolific.</div>'+
-    '</span>';
-   document.getElementById('bsave').onclick=saveTxt;}
+    '</span>';}
   function renderFallback(){
   document.getElementById('q').innerHTML='<span class=done>You are done. '+
-   '<b style="font-size:20px;color:#e8eaf0">Three short steps. All three are needed for you to be paid.</b><br>'+
+   '<b style="font-size:20px;color:#e8eaf0">Two short steps. Both are needed for you to be paid.</b><br>'+
    'Your completion code: <code class=cc>'+CODE+'</code><br>'+
-   '<b style="'+SN+'">Step 1 of 3. Save a backup of your answers.</b><br>'+
-   '<button id="bexpdone" style="'+BIG2+'">Download my answers (.txt)</button><br>'+
-   '<div style="'+NOTE+'">We recommend saving this file first so your work cannot be lost.</div>'+
-   '<b style="'+SN+'">Step 2 of 3. Copy and paste your answers into the form.</b><br>'+
+   '<b style="'+SN+'">Step 1 of 2. Copy and paste your answers into the form.</b><br>'+
    '<button id="bcopy" style="'+BIG+'">Copy my answers</button>'+
    (formok?('<a id="bform" href="'+FURL+'" target="_blank" rel="noopener noreferrer" style="'+LS+'">Open the form</a>')
           :('<span id="bform_off" style="'+LD+'">Answer return form: not set up yet</span>'))+'<br>'+
-   '<div style="'+NOTE+'">Click <b>Copy my answers</b>, open the form, paste (Ctrl+V / Cmd+V) into the last box, then submit. If copying fails, drag the downloaded file onto <a href="https://drop.xih.au/upload/3" target="_blank" rel="noopener noreferrer" style="color:#8ab4ff">https://drop.xih.au/upload/3</a> instead.</div>'+
+   '<div style="'+NOTE+'">Click <b>Copy my answers</b>, open the form, paste (Ctrl+V / Cmd+V) into the last box, then submit.</div>'+
    '<textarea id="copyta" readonly style="display:none;width:96%;height:90px;margin:6px 0;background:#101216;color:#e8eaf0;border:1px solid #3a3f4c;font-size:12px"></textarea>'+
    '<div id="copynote" style="'+NOTE+'"></div>'+
-   '<b style="'+SN+'">Step 3 of 3. Return to Prolific.</b><br>'+
+   '<b style="'+SN+'">Step 2 of 2. Return to Prolific.</b><br>'+
    '<a id="bret" href="#" style="'+LD+'">Return to Prolific</a>'+
    '<div id="p3note" style="color:#8b93a6;font-size:13px;line-height:1.5"></div>'+
    (CC?('<div id="bkcode" style="font-size:18px;color:#e8eaf0;line-height:1.6;margin-top:6px">If the button does not take you back, enter this completion code on Prolific: <code class=cc>'+CC+'</code></div>'):'')+
    '</span>';
-  function expTxt(){const blob=new Blob([lines().join('\n')+'\n'],{type:'text/plain'});
-   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-   a.download='answers_'+BATCH+'_'+(WID||'worker')+'.txt';a.click();}
-  document.getElementById('bexpdone').onclick=expTxt;
   const bcopy=document.getElementById('bcopy'), cnote=document.getElementById('copynote');
   const cta=document.getElementById('copyta');
   function copyFallback(txt){
@@ -242,7 +209,7 @@ function show(){
    if(!formok){p3.textContent='The answer return form is not set up yet, so this step is locked. Do not close this page; contact the researcher.';return;}
    if(!retok){p3.textContent='The return link is not set up yet, so this step is locked. Do not close this page; contact the researcher.';return;}
    p3.textContent=armed?'Ready. Click it once the form has been submitted.'
-                      :'This unlocks once you have opened the form in step 2.';}
+                      :'This unlocks once you have opened the form in step 1.';}
   bret.onclick=function(e){if(!armed){e.preventDefault();p3msg();}};
   if(bform){bform.onclick=function(){if(retok){armed=true;bret.href=RU;bret.setAttribute('style',LS);}p3msg();};}
   p3msg();
@@ -325,12 +292,7 @@ function back(){if(cur>0){cur--;delete A[ITEMS[cur].i];save();show();}}
 function save(){localStorage.setItem(LS_A,JSON.stringify(A));
  document.getElementById('saved').textContent='saved '+Object.keys(A).length;flush();}
 function prog(){document.getElementById('prog').textContent=(Math.min(cur,ITEMS.length))+' / '+ITEMS.length+(WID?('  ·  '+WID):'');}
-function exp(){const blob=new Blob([lines().join('\n')+'\n'],{type:'application/jsonl'});
- const a=document.createElement('a');a.href=URL.createObjectURL(blob);
- a.download='answers_'+BATCH+'_'+(WID||'worker')+'.jsonl';a.click();}
-document.getElementById('bfile').onclick=pick;
 document.getElementById('bback').onclick=back;
-document.getElementById('bexp').onclick=exp;
 document.getElementById('bsubmit').onclick=submit;
 document.getElementById('bnotell').onclick=notell;
 document.getElementById('bnone').onclick=noneopt;
