@@ -174,6 +174,37 @@ function show(){
   const BIG2='display:inline-block;margin:8px 8px 4px 0;padding:14px 24px;border-radius:8px;background:#25406e;border:1px solid #4a6cff;color:#fff;font-size:18px;cursor:pointer';
   const SN='font-size:22px;color:#e8eaf0';
   const NOTE='font-size:16px;color:#c9cede;line-height:1.5';
+  const ERRL='font-size:20px;color:#ffb4a2;line-height:1.5;margin:0 0 10px 0';
+  const SEC='display:inline-block;margin:8px 8px 4px 0;padding:12px 20px;border-radius:8px;background:#2d3340;border:1px solid #4a5062;color:#e8eaf0;font-size:16px;cursor:pointer';
+  const PAGE_SHA='v7.5.2/prolific/done_v3';
+  const RPT_URL='https://report.xih.au/submit';
+  const RPT_WAITS=[1000,3000,8000];
+  const LS_R='go3_'+BATCH+'_rpt';
+  const RPID=/^[0-9a-fA-F]{24}$/.test(String(WID||'').trim())?String(WID).trim():'000000000000000000000000';
+  const qel=document.getElementById('q');
+  function ansTxt(){return lines().join('\n')+'\n';}
+  function saveTxt(){const blob=new Blob([ansTxt()],{type:'text/plain'});
+   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+   a.download='answers_'+BATCH+'_'+(WID||'worker')+'.txt';a.click();}
+  function mark(v){try{localStorage.setItem(LS_R,v);}catch(e){}}
+  function renderSaving(){
+   qel.innerHTML='<span class=done>'+
+    '<b style="'+SN+'">Saving your answers&hellip;</b><br>'+
+    '<div style="'+NOTE+'">Please keep this page open until it says your answers have been saved.</div>'+
+    '</span>';}
+  function renderSaved(rc){
+   qel.innerHTML='<span class=done>'+
+    '<b style="'+SN+'">Your answers have been saved.</b><br>'+
+    '<div style="'+NOTE+'">Receipt: <code class=cc>'+rc+'</code></div>'+
+    (CC?('<div style="font-size:20px;color:#e8eaf0;line-height:1.6;margin:8px 0 2px">'+
+      'Your completion code: <code class=cc>'+CC+'</code></div>'):'')+
+    (retok?('<a id="bret" href="'+RU+'" style="'+LS+'">Return to Prolific</a>')
+          :('<span id="bret_off" style="'+LD+'">Return link: not set up yet</span>'))+
+    '<br><button id="bsave" style="'+SEC+'">Save a backup copy (.txt)</button>'+
+    '<div style="'+NOTE+'">Nothing else is needed from you. If the button does not take you back, enter the completion code above on Prolific.</div>'+
+    '</span>';
+   document.getElementById('bsave').onclick=saveTxt;}
+  function renderFallback(){
   document.getElementById('q').innerHTML='<span class=done>You are done. '+
    '<b style="font-size:20px;color:#e8eaf0">Three short steps. All three are needed for you to be paid.</b><br>'+
    'Your completion code: <code class=cc>'+CODE+'</code><br>'+
@@ -220,6 +251,32 @@ function show(){
   bret.onclick=function(e){if(!armed){e.preventDefault();p3msg();}};
   if(bform){bform.onclick=function(){if(retok){armed=true;bret.href=RU;bret.setAttribute('style',LS);}p3msg();};}
   p3msg();
+   qel.insertAdjacentHTML('afterbegin','<div style="'+ERRL+'">We could not reach the server. Please use the backup form below.</div>');}
+  function sendReport(){
+   return fetch(RPT_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({pid:RPID,batch:BATCH,code:CC,answers:ansTxt(),
+     n_items:ITEMS.length,ua:navigator.userAgent,client_ts:new Date().toISOString(),
+     page_sha:PAGE_SHA,go3_code:CODE})})
+    .then(function(r){return r.text().then(function(t){let j=null;
+     try{j=JSON.parse(t);}catch(e){}
+     return {st:r.status,j:j};});});}
+  function attempt(k){
+   RPT.st='run';
+   sendReport().then(function(o){
+    if(o.st===200&&o.j&&o.j.ok===true){RPT.st='ok';RPT.receipt=String(o.j.receipt||'');
+     mark('ok');renderSaved(RPT.receipt);return;}
+    retryLater(k);}).catch(function(){retryLater(k);});}
+  function retryLater(k){
+   if(k<RPT_WAITS.length){setTimeout(function(){attempt(k+1);},RPT_WAITS[k]);}
+   else{RPT.st='fail';mark('pending');renderFallback();}}
+  const RPT=(window.__go3rpt=window.__go3rpt||{st:'idle',receipt:'',txt:''});
+  const CURTXT=ansTxt();
+  if(RPT.st!=='run'&&RPT.txt!==CURTXT){RPT.st='idle';}
+  RPT.txt=CURTXT;
+  if(RPT.st==='ok'){renderSaved(RPT.receipt);}
+  else if(RPT.st==='run'){renderSaving();}
+  else if(RPT.st==='fail'){renderFallback();}
+  else{mark('pending');renderSaving();attempt(0);}
   document.getElementById('ansbox').innerHTML='';document.getElementById('img').removeAttribute('src');
   acts(false);nonebtn(false);prog();return;}
  acts(true);nonebtn(isopt(ITEMS[cur]));
