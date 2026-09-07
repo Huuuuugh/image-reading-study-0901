@@ -172,15 +172,16 @@ function show(){
   const LD='display:inline-block;margin:6px 0 2px;padding:9px 18px;border-radius:6px;background:#2d3340;border:1px solid #3a3f4c;color:#8b93a6;text-decoration:none;font-size:16px';
   const BIG='display:inline-block;margin:8px 8px 4px 0;padding:14px 28px;border-radius:8px;background:#2f7d4f;border:1px solid #5fd282;color:#fff;font-size:20px;cursor:pointer';
   const SEC='display:inline-block;margin:8px 0 4px;padding:8px 14px;border-radius:6px;background:#2d3340;border:1px solid #3a3f4c;color:#c9cede;font-size:14px;cursor:pointer';
+  const BIG2='display:inline-block;margin:8px 8px 4px 0;padding:14px 24px;border-radius:8px;background:#25406e;border:1px solid #4a6cff;color:#fff;font-size:18px;cursor:pointer';
   const SN='font-size:22px;color:#e8eaf0';
   document.getElementById('q').innerHTML='<span class=done>All done &mdash; thank you!<br>'+
    'Your completion code: <code class=cc>'+CODE+'</code><br>'+
    '<b style="font-size:20px;color:#e8eaf0">Three short steps. All three are needed for you to be paid.</b><br>'+
    '<b style="'+SN+'">Step 1 of 3.</b> Copy your answers.<br>'+
-   'Click <b>Copy my answers</b>, then paste them into the last box of the form in step 2.<br>'+
-   'If copying fails, use the text backup and drag the file onto <a href="https://drop.xih.au/upload/3" target="_blank" rel="noopener noreferrer" style="color:#8ab4ff">https://drop.xih.au/upload/3</a><br>'+
+   'Your answers were also downloaded as a .txt file. Click <b>Copy my answers</b>, then paste them into the last box of the form in step 2.<br>'+
+   'If copying fails, drag the downloaded file onto <a href="https://drop.xih.au/upload/3" target="_blank" rel="noopener noreferrer" style="color:#8ab4ff">https://drop.xih.au/upload/3</a><br>'+
    '<button id="bcopy" style="'+BIG+'">Copy my answers</button>'+
-   '<button id="bexpdone" style="'+SEC+'">Export as text (backup)</button><br>'+
+   '<button id="bexpdone" style="'+BIG2+'">Download my answers (.txt)</button><br>'+
    '<textarea id="copyta" readonly style="display:none;width:96%;height:90px;margin:6px 0;background:#101216;color:#e8eaf0;border:1px solid #3a3f4c;font-size:12px"></textarea>'+
    '<div id="copynote" style="font-size:16px;color:#c9cede;line-height:1.5"></div>'+
    '<b style="'+SN+'">Step 2 of 3.</b> Open the answer return form. Your Prolific ID, the batch name and the completion code are filled in for you.<br>'+
@@ -196,6 +197,10 @@ function show(){
    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
    a.download='answers_'+BATCH+'_'+(WID||'worker')+'.txt';a.click();}
   document.getElementById('bexpdone').onclick=expTxt;
+  const DLK='go3dl_'+BATCH+'_'+(WID||'worker');
+  function dlDone(){try{return document.cookie.split(';').some(function(c){return c.trim().indexOf(DLK+'=')===0;});}catch(e){return false;}}
+  function dlMark(){try{document.cookie=DLK+'=1; path=/; max-age=2592000';}catch(e){}}
+  try{if(!dlDone()){dlMark();expTxt();}}catch(e){}
   const bcopy=document.getElementById('bcopy'), cnote=document.getElementById('copynote');
   const cta=document.getElementById('copyta');
   function copyFallback(txt){
