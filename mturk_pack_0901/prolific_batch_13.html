@@ -162,6 +162,7 @@ function show(){
   const okf=(s)=>s&&s.indexOf('FILL_ME')<0&&s.indexOf('<')<0;
   const formok=okf(FU)&&okf(EN.prolific_id)&&okf(EN.batch)&&okf(EN.completion_code)&&okf(EN.answers_jsonl);
   const retok=okf(RU);
+  const CC=retok?String(RU.split('cc=')[1]||'').trim():'';
   let FURL='';
   if(formok){FURL=FU+(FU.indexOf('?')<0?'?':'&')+'usp=pp_url'
     +'&'+encodeURIComponent(EN.prolific_id)+'='+encodeURIComponent(WID)
@@ -169,18 +170,41 @@ function show(){
     +'&'+encodeURIComponent(EN.completion_code)+'='+encodeURIComponent(CODE);}
   const LS='display:inline-block;margin:6px 0 2px;padding:9px 18px;border-radius:6px;background:#25406e;border:1px solid #4a6cff;color:#fff;text-decoration:none;font-size:16px';
   const LD='display:inline-block;margin:6px 0 2px;padding:9px 18px;border-radius:6px;background:#2d3340;border:1px solid #3a3f4c;color:#8b93a6;text-decoration:none;font-size:16px';
+  const BIG='display:inline-block;margin:8px 8px 4px 0;padding:14px 28px;border-radius:8px;background:#2f7d4f;border:1px solid #5fd282;color:#fff;font-size:20px;cursor:pointer';
+  const SEC='display:inline-block;margin:8px 0 4px;padding:8px 14px;border-radius:6px;background:#2d3340;border:1px solid #3a3f4c;color:#c9cede;font-size:14px;cursor:pointer';
+  const SN='font-size:22px;color:#e8eaf0';
   document.getElementById('q').innerHTML='<span class=done>All done &mdash; thank you!<br>'+
    'Your completion code: <code class=cc>'+CODE+'</code><br>'+
-   'Three steps finish this study on Prolific. Do them in this order.<br>'+
-   '<b>Step 1 of 3.</b> Export your answer file.<br>'+'<button id="bexpdone">Export JSONL</button><br>'+
-   '<b>Step 2 of 3.</b> Open the answer return form and paste the exported file into it. Your Prolific ID, the batch name and the completion code are filled in for you.<br>'+
+   '<b style="font-size:20px;color:#e8eaf0">Three short steps. All three are needed for you to be paid.</b><br>'+
+   '<b style="'+SN+'">Step 1 of 3.</b> Copy your answers.<br>'+
+   'Click <b>Copy my answers</b>, then paste them into the last box of the form in step 2.<br>'+
+   '<button id="bcopy" style="'+BIG+'">Copy my answers</button>'+
+   '<button id="bexpdone" style="'+SEC+'">Export JSONL (backup)</button><br>'+
+   '<textarea id="copyta" readonly style="display:none;width:96%;height:90px;margin:6px 0;background:#101216;color:#e8eaf0;border:1px solid #3a3f4c;font-size:12px"></textarea>'+
+   '<div id="copynote" style="font-size:16px;color:#c9cede;line-height:1.5"></div>'+
+   '<b style="'+SN+'">Step 2 of 3.</b> Open the answer return form. Your Prolific ID, the batch name and the completion code are filled in for you.<br>'+
+   'Paste (Ctrl+V) into the last box, then submit.<br>'+
    (formok?('<a id="bform" href="'+FURL+'" target="_blank" rel="noopener noreferrer" style="'+LS+'">Open the answer return form</a>')
           :('<span id="bform_off" style="'+LD+'">Answer return form: not set up yet</span>'))+'<br>'+
-   '<b>Step 3 of 3.</b> Go back to Prolific so your submission is registered. Only do this after the form says it was submitted.<br>'+
+   '<b style="'+SN+'">Step 3 of 3.</b> Go back to Prolific so your submission is registered. Only do this after the form says it was submitted.<br>'+
    '<a id="bret" href="#" style="'+LD+'">Return to Prolific</a>'+
    '<div id="p3note" style="color:#8b93a6;font-size:13px;line-height:1.5"></div>'+
+   (CC?('<div id="bkcode" style="font-size:18px;color:#e8eaf0;line-height:1.6;margin-top:6px">If the button does not take you back, enter this completion code on Prolific: <code class=cc>'+CC+'</code></div>'):'')+
    '</span>';
   document.getElementById('bexpdone').onclick=exp;
+  const bcopy=document.getElementById('bcopy'), cnote=document.getElementById('copynote');
+  const cta=document.getElementById('copyta');
+  function copyFallback(txt){
+   cta.style.display='block'; cta.value=txt;
+   try{cta.focus();cta.select();cta.setSelectionRange(0,txt.length);}catch(e){}
+   cnote.textContent='The text is selected above. Press Ctrl+C to copy it, then paste it into the last box of the form in step 2.';}
+  bcopy.onclick=function(){
+   const arr=lines(), txt=arr.join('\n'), n=arr.length;
+   bcopy.textContent='Copied ('+n+' lines)';
+   if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){
+     cnote.textContent='Copied '+n+' lines. Open the form in step 2 and paste with Ctrl+V into the last box.';}).catch(function(){copyFallback(txt);});
+   }else{copyFallback(txt);}};
   const bret=document.getElementById('bret'), p3=document.getElementById('p3note');
   const bform=document.getElementById('bform');
   let armed=false;
